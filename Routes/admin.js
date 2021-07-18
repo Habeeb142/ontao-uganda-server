@@ -1,0 +1,123 @@
+const express = require('express');
+const router = express.Router();
+const DB = require('../config/db');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
+const bcrypt = require('bcryptjs');
+const { body, validationResult } = require('express-validator');
+
+router.route('/dashboard/:taskType')
+    .post(
+        authenticateToken, 
+        body('email').isLength({min: 5}),
+        body('before').isLength({min: 5, max: 10}),
+        body('after').isLength({min: 5, max: 10}),
+        async (req, res) => {
+        
+        try {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(400).json({ messages: errors.array() });
+            }
+            
+            const query = `SELECT * 
+            FROM ${req.params.taskType}
+            WHERE date BETWEEN '${req.body.before}' AND '${req.body.after}'` 
+
+            await DB.query(query, 
+            (err, data) => {
+                if (!err) {
+                    res.status(200).json({
+                        isSuccess: true,
+                        data
+                    })
+                }
+                else {
+                    res.status(202).json({
+                        isSuccess: false,
+                        message: err
+                    })
+                }
+            })
+        }
+        catch (err) {
+            res.status(500).send({
+                isSuccess: false,
+                message: err
+            })
+        }
+
+    });
+
+router.route('/generatePassword')
+    .get(async (req, res) => {
+    
+    try {
+        await DB.query("SELECT * FROM admin where password = '' ", 
+        (err, rows) => {
+            if (!err) {
+                if(rows.length > 0) {
+                 rows.map(async data => {
+    
+                        const detail = data.email.split(".");
+                        const password = detail[0].toLowerCase().slice(0, 3) + detail[1].toLowerCase().slice(0,3)
+                       
+                        const salt = await bcrypt.genSalt(10);
+                        const hashed = await bcrypt.hash(password, salt);
+    
+                        await DB.query(`UPDATE admin SET password = '${hashed}' WHERE email = '${data.email}'`, 
+                        (err, results) => {
+                            if (err) {
+                                return res.status(400).send({
+                                    success: false,
+                                    msg: err
+                                })
+                            }
+                            else {
+                                return res.status(200).json({
+                                    success: true,
+                                    msg: 'Updated Successfully',
+                                    results
+                                })
+                            }
+                        })
+                    
+
+                    });
+                }
+                else {
+                    return res.send("No Record")
+                }
+                
+            }
+            else {
+                res.send(err)
+            }
+        })
+    }
+    catch (err) {
+        res.status(500).send({
+            success: false,
+            err
+        })
+    }
+    
+})
+
+// Function Handling Authentication
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    
+    if (token == null || jwt.decode(token)['email'] !== req['body']['email']) return res.sendStatus(401)
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+      
+        if (err) return res.sendStatus(403)
+        req.user = user
+
+    })
+    next()
+}
+
+module.exports = router;
