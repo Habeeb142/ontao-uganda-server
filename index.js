@@ -24,7 +24,7 @@ app.use(helmet(
     }
 ));
 
-const GET_SET_DATA = require('./Routes/get_set_data');
+// const GET_SET_DATA = require('./Routes/get_set_data');
 const AI = require('./Routes/ai_port');
 const AUTHENTICATION = require('./Routes/authentication');
 const ADMIN = require('./Routes/admin');
@@ -33,7 +33,7 @@ app.get('/', (req, res) => {
     res.send('Welcome to OnTap Uganda Server!')
 });
 // endpoints
-app.use('/get_set_data', GET_SET_DATA);
+// app.use('/get_set_data', GET_SET_DATA);
 app.use('/ai_port', AI);
 app.use('/authentication', AUTHENTICATION);
 app.use('/admin', ADMIN);
