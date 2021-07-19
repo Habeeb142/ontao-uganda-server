@@ -13,7 +13,6 @@ function authenticateToken(req, res, next) {
     if (token == null || jwt.decode(token) !== 'ontap_user') return res.sendStatus(401)
     
     jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-      console.log(err)
   
       if (err) return res.sendStatus(403)
   
