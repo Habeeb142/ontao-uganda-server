@@ -30,6 +30,7 @@ function authenticateToken(req, res, next) {
 }
 
 // Function to fetch data from Salesforce and do submission to our databse
+
 router.route('/:weekType/:taskType')
     .get( authenticateToken, async(req, res) => {
         const taskType = req.params.taskType
@@ -37,10 +38,10 @@ router.route('/:weekType/:taskType')
         console.log('***Query Started***')
         // SOQL Query fetching fron SALESFROCE
         let accounts = await SF.query(soql);
-        console.log('***Done***')
         // RESULT = accounts['records']
         // Function doing actual submission into our databse
         handleSubmitData(accounts['records'], taskType)
+        console.log('***Done***')
         
     })
     
@@ -49,7 +50,7 @@ async function handleSubmitData(data, taskType) {
         // flter to get todatz tasks
         x = new Date().toLocaleDateString().split("/")  
         
-        const dat_ = data.filter(dat=> dat['CreatedDate'].split("T")[0] == x[2]+'-'+x[1]+'-'+x[0]);
+        // const dat_ = data.filter(dat=> dat['CreatedDate'].split("T")[0] == x[2]+'-'+x[1]+'-'+x[0]);
         console.log(`You have ${data.length} data to upload!`)
         
         setTimeout(() => {       
@@ -77,12 +78,12 @@ async function handleSubmitData(data, taskType) {
                                 const sql = `
                                 INSERT INTO ${taskType} 
                                 (user, image, action, date, taskType, pocId, teamlead, region, month) 
-                                VALUES ('${element?.CreatedBy?.Email}', '${element?.ONTEAF_Attachment_Link_to_Export__c}', 'Awaiting AI', '${element?.CreatedDate}', 'Chiller', '${element?.Id}', '${element?.CreatedBy?.First_Manager__r?.Email}', '${element?.ONTAP__SurveyTaker__r?.ONTAP__Account__r?.ONTAP__Region__c}', ${new Date().getMonth() + 1} )`
+                                VALUES ('${element?.CreatedBy?.Email}', '${element?.ONTEAF_Attachment_Link_to_Export__c}', 'Awaiting AI', '${element?.CreatedDate}', 'Chiller', '${element?.ONTAP__SurveyTaker__r.ONTAP__Account__c}', '${element?.CreatedBy?.First_Manager__r?.Email}', '${element?.ONTAP__SurveyTaker__r?.ONTAP__Account__r?.ONTAP__Region__c}', ${new Date().getMonth() + 1} )`
                                     DB.query(sql, 
                                     (err, rows) => {
                                         try {
                                             if (!err) {
-                                                console.log(`Done: ${index} of ${data.length}`)
+                                                console.log(`Just Uploaded: ${index} of ${data.length}`)
                                             }
                                             else {
                                                 console.log(err)
@@ -92,7 +93,11 @@ async function handleSubmitData(data, taskType) {
                                         }               
                                     })
 
-                            }             
+                            }      
+                            
+                            else {
+                                console.log(`Already Uploaded: ${index} of ${data.length}`)
+                            }
                         })
 
                     }
