@@ -69,7 +69,7 @@ async function handleSubmitData(data, taskType) {
 
                     const selectSql = `
                         SELECT id from ${taskType} 
-                        WHERE image = '${element?.ONTEAF_Attachment_Link_to_Export__c}'
+                        WHERE image = '${element.ONTEAF_Attachment_Link_to_Export__c}'
                     `
                     await DB.query(selectSql, 
                         (err, rows) => {
@@ -78,7 +78,7 @@ async function handleSubmitData(data, taskType) {
                                 const sql = `
                                 INSERT INTO ${taskType} 
                                 (user, image, action, date, taskType, pocId, teamlead, region, month) 
-                                VALUES ('${element?.CreatedBy?.Email}', '${element?.ONTEAF_Attachment_Link_to_Export__c}', 'Awaiting AI', '${element?.CreatedDate}', 'Chiller', '${element?.ONTAP__SurveyTaker__r.ONTAP__Account__c}', '${element?.CreatedBy?.First_Manager__r?.Email}', '${element?.ONTAP__SurveyTaker__r?.ONTAP__Account__r?.ONTAP__Region__c}', ${new Date().getMonth() + 1} )`
+                                VALUES ('${element.CreatedBy.Email}', '${element.ONTEAF_Attachment_Link_to_Export__c}', 'Awaiting AI', '${element.CreatedDate}', 'Chiller', '${element.ONTAP__SurveyTaker__r.ONTAP__Account__c}', '${element.CreatedBy.First_Manager__r.Email}', '${element.ONTAP__SurveyTaker__r.ONTAP__Account__r.ONTAP__Region__c}', ${new Date().getMonth() + 1} )`
                                     DB.query(sql, 
                                     (err, rows) => {
                                         try {
