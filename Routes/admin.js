@@ -29,7 +29,7 @@ router.route('/dashboard/:taskType')
                 if (!err) {
                     res.status(200).json({
                         isSuccess: true,
-                        data
+                        visualizer: data
                     })
                 }
                 else {
@@ -104,6 +104,7 @@ router.route('/generatePassword')
     
 })
 
+
 router.route('/overview')
     .post(
         authenticateToken,
@@ -163,6 +164,8 @@ router.route('/getTotal')
             })
         }
     })
+
+
 
 // Function Handling Authentication
 function authenticateToken(req, res, next) {
