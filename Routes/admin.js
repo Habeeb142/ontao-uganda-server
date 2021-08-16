@@ -104,6 +104,66 @@ router.route('/generatePassword')
     
 })
 
+router.route('/overview')
+    .post(
+        authenticateToken,
+        async (req, res) => {
+        
+        try {
+            await DB.query(`SELECT
+            id as taskId, user, pocId, taskType,
+            action, date, region, teamlead as team_lead, image
+            FROM chiller_task 
+            WHERE
+            (date BETWEEN '${req.body.before}' AND '${req.body.after}')`, 
+            (err, rows) => {
+                if (!err) {
+                    res.status(200).send({
+                        data: rows,
+                        isSuccess: true
+                    })
+                }
+                else {console.log(err)
+                    res.status(400).send({
+                        isSuccess: false
+                    })
+                }
+            })
+        }
+        catch (err) {
+            res.status(500).send({
+                isSuccess: false,
+                err
+            })
+        }
+
+    });
+
+router.route('/getTotal')
+    .get(async (req, res) => {
+        try {
+            
+            await DB.query("SELECT COUNT (id) AS taskCount FROM chiller_task", 
+            // await connectDB.query("SELECT COUNT (*) AS taskCount FROM task where NOT action = 'Awaiting AI'", 
+            (err, taskCount) => {
+                res.status(200).send({
+                    data: {
+                        taskCount: taskCount[0].taskCount ,
+                        userCount: 'Loading...',
+                        pocCount: 'Loading...'
+                    },
+                    isSuccess: true
+                })
+            })
+        }
+        catch (err) {
+            res.status(500).send({
+                isSuccess: false,
+                err
+            })
+        }
+    })
+
 // Function Handling Authentication
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
