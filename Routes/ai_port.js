@@ -60,7 +60,7 @@ router.route('/:taskType')
             })
         }
     })
-    // a patch request handling update from ai in other to submit results to our databse
+    // a patch request handling update from ai in other to submit results to our database
     .patch(authenticateToken, async (req, res) => {
         let trimmed = {};
         let coordinate = {};
@@ -71,19 +71,14 @@ router.route('/:taskType')
             trimmed.white_space = req.body.whitespace_condition == undefined? null : req.body.whitespace_condition;
             trimmed.white_space_perc = req.body.percentage_whitespace == undefined? null : req.body.percentage_whitespace;
             trimmed.contaminated = req.body.contamination_presence;
-            trimmed.ReddsRGB = req.body.present_classes.ReddsRGB;
-            trimmed.SafariRGB = req.body.present_classes.SafariRGB;
-            trimmed.BalimiRGB = req.body.present_classes.BalimiRGB;
-            trimmed.KilimanjaroCAN = req.body.present_classes.KilimanjaroCAN;
-            trimmed.SafariCAN = req.body.present_classes.SafariCAN;
-            trimmed.CastleLiteCAN = req.body.present_classes.CastleLiteCAN;
-            trimmed.BingwaRGB = req.body.present_classes.BingwaRGB;
-            trimmed.ReddsCAN = req.body.present_classes.ReddsCAN;
-            trimmed.CastleRGB = req.body.present_classes.CastleRGB;
-            trimmed.CastleLiteRGB = req.body.present_classes.CastleLiteRGB;
-            trimmed.EagleRGB = req.body.present_classes.EagleRGB;
-            trimmed.GrandMaltCAN = req.body.present_classes.GrandMaltCAN;
-            trimmed.KilimanjaroRGB = req.body.present_classes.KilimanjaroRGB;
+            trimmed.EagleDark = req.body.present_classes.EagleDark;
+            trimmed.NileSpecial = req.body.present_classes.NileSpecial;
+            trimmed.CastleMilkStout = req.body.present_classes.CastleMilkStout;
+            trimmed.CastleLiteCan = req.body.present_classes.CastleLiteCan;
+            trimmed.EagleLager = req.body.present_classes.EagleLager;
+            trimmed.Club = req.body.present_classes.Club;
+            trimmed.CastleLite = req.body.present_classes.CastleLite;
+            trimmed.NileStout = req.body.present_classes.NileStout;
             // image_quality
             trimmed.image_quality = req.body.image_quality;
         }
