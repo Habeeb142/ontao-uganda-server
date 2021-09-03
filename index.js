@@ -28,6 +28,7 @@ const GET_SET_DATA = require('./Routes/get_set_data');
 const AI = require('./Routes/ai_port');
 const AUTHENTICATION = require('./Routes/authentication');
 const ADMIN = require('./Routes/admin');
+const DATA = require('./Routes/data_port');
 
 app.get('/', (req, res) => {
     res.send('Welcome to OnTap Uganda Server!')
@@ -37,6 +38,7 @@ app.use('/get_set_data', GET_SET_DATA);
 app.use('/ai_port', AI);
 app.use('/authentication', AUTHENTICATION);
 app.use('/admin', ADMIN);
+app.use('/data', DATA);
 // Port the app listens too
 const port = process.env.PORT || 5000;
 
