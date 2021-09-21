@@ -74,10 +74,10 @@ router.route('/:taskType')
             trimmed.EagleDark = req.body.present_classes.EagleDark;
             trimmed.NileSpecial = req.body.present_classes.NileSpecial;
             trimmed.CastleMilkStout = req.body.present_classes.CastleMilkStout;
-            trimmed.CastleLiteCan = req.body.present_classes.CastleliteCan;
+            trimmed.CastleLiteCan = req.body.present_classes.CastleLiteCan;
             trimmed.EagleLager = req.body.present_classes.EagleLager;
             trimmed.Club = req.body.present_classes.Club;
-            trimmed.CastleLite = req.body.present_classes.CastleLite;
+            trimmed.CastleLite = req.body.present_classes.Castlelite;
             trimmed.NileStout = req.body.present_classes.NileStout;
             // image_quality
             trimmed.image_quality = req.body.image_quality;
