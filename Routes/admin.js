@@ -57,7 +57,7 @@ router.route('/generatePassword')
         (err, rows) => {
             if (!err) {
                 if(rows.length > 0) {
-                 rows.map(async data => {
+                 rows.map(async (data, index) => {
     
                         const detail = data.email.split(".");
                         const password = detail[0].toLowerCase().slice(0, 3) + detail[1].toLowerCase().slice(0,3)
@@ -74,11 +74,13 @@ router.route('/generatePassword')
                                 })
                             }
                             else {
-                                return res.status(200).json({
-                                    success: true,
-                                    msg: 'Updated Successfully',
-                                    results
-                                })
+                                if(index == rows.length-1) {
+                                    return res.status(200).json({
+                                        success: true,
+                                        msg: 'Updated Successfully',
+                                        results
+                                    })
+                                }
                             }
                         })
                     
@@ -165,6 +167,64 @@ router.route('/getTotal')
         }
     })
 
+router.route('/report/:type')
+    .post(
+        authenticateToken,
+        async (req, res) => {
+            
+        try {
+            await DB.query(`SELECT
+            id, user, taskType,
+            action, date, region, teamlead
+            FROM chiller_task 
+            WHERE
+            (date BETWEEN '${req.body.before}' AND '${req.body.after}')`, 
+            async (err, rows) => {
+                if (!err) {
+                    
+                    const data = await analytics(rows, req.params.type);
+
+                    res.status(200).send({
+                        data,
+                        isSuccess: true
+                    })
+                }
+                else {
+                    res.status(400).send({
+                        isSuccess: false
+                    })
+                }
+            })
+        }
+        catch (err) {
+            res.status(500).send({
+                isSuccess: false,
+                err
+            })
+        }
+
+    });
+
+    async function analytics(data, type) {
+ 
+        payload = []
+        // delete duplicate
+        const users = await data.filter((v,i,a)=>a.findIndex(t=>(t[type.toLowerCase()] === v[type.toLowerCase()]))===i);
+    
+        await users.forEach(element => {
+            payload.push({
+                header: element[type.toLowerCase()],
+                goodExec: data.filter(dat=>dat['action']=='success' && dat[type.toLowerCase()]==element[type.toLowerCase()]).length,
+                badExec: data.filter(dat=>dat['action']=='bad' && dat[type.toLowerCase()]==element[type.toLowerCase()]).length,
+                awaitingAI: data.filter(dat=>dat['action']=='Awaiting AI' && dat[type.toLowerCase()]==element[type.toLowerCase()]).length,
+                total: data.filter(dat=>dat[type.toLowerCase()]==element[type.toLowerCase()]).length,
+                perGoodExec: ((data.filter(dat=>dat['action']=='success' && dat[type.toLowerCase()]==element[type.toLowerCase()]).length/data.filter(dat=>dat[type.toLowerCase()]==element[type.toLowerCase()]).length)*100).toFixed(0),
+                perBadExec: ((data.filter(dat=>dat['action']=='bad' && dat[type.toLowerCase()]==element[type.toLowerCase()]).length/data.filter(dat=>dat[type.toLowerCase()]==element[type.toLowerCase()]).length)*100).toFixed(0),
+                perAwaitingAI: ((data.filter(dat=>dat['action']=='Awaiting AI' && dat[type.toLowerCase()]==element[type.toLowerCase()]).length/data.filter(dat=>dat[type.toLowerCase()]==element[type.toLowerCase()]).length)*100).toFixed(0),
+            })
+        });  
+       return payload.sort((a, b)=> b.total - a.total)  
+    }
 
 
 // Function Handling Authentication
