@@ -40,7 +40,7 @@ app.use('/authentication', AUTHENTICATION);
 app.use('/admin', ADMIN);
 app.use('/data', DATA);
 // Port the app listens too
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 6000;
 
 app.listen(port, () => {
     console.log(`Server listening on port ${port}`)

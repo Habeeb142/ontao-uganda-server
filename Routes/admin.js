@@ -205,26 +205,80 @@ router.route('/report/:type')
 
     });
 
-    async function analytics(data, type) {
- 
-        payload = []
-        // delete duplicate
-        const users = await data.filter((v,i,a)=>a.findIndex(t=>(t[type.toLowerCase()] === v[type.toLowerCase()]))===i);
-    
-        await users.forEach(element => {
-            payload.push({
-                header: element[type.toLowerCase()],
-                goodExec: data.filter(dat=>dat['action']=='success' && dat[type.toLowerCase()]==element[type.toLowerCase()]).length,
-                badExec: data.filter(dat=>dat['action']=='bad' && dat[type.toLowerCase()]==element[type.toLowerCase()]).length,
-                awaitingAI: data.filter(dat=>dat['action']=='Awaiting AI' && dat[type.toLowerCase()]==element[type.toLowerCase()]).length,
-                total: data.filter(dat=>dat[type.toLowerCase()]==element[type.toLowerCase()]).length,
-                perGoodExec: ((data.filter(dat=>dat['action']=='success' && dat[type.toLowerCase()]==element[type.toLowerCase()]).length/data.filter(dat=>dat[type.toLowerCase()]==element[type.toLowerCase()]).length)*100).toFixed(0),
-                perBadExec: ((data.filter(dat=>dat['action']=='bad' && dat[type.toLowerCase()]==element[type.toLowerCase()]).length/data.filter(dat=>dat[type.toLowerCase()]==element[type.toLowerCase()]).length)*100).toFixed(0),
-                perAwaitingAI: ((data.filter(dat=>dat['action']=='Awaiting AI' && dat[type.toLowerCase()]==element[type.toLowerCase()]).length/data.filter(dat=>dat[type.toLowerCase()]==element[type.toLowerCase()]).length)*100).toFixed(0),
+router.route('/summary')
+    .post(
+        authenticateToken,
+        async (req, res) => {
+            
+        try {
+            await DB.query(`SELECT
+            id, user, taskType,
+            action, date, region, teamlead
+            FROM chiller_task 
+            WHERE
+            (date BETWEEN '${req.body.before}' AND '${req.body.after}')`, 
+            async (err, rows) => {
+                if (!err) {
+                    
+                    const data = await summary_analytics(rows);
+
+                    res.status(200).send({
+                        data,
+                        isSuccess: true
+                    })
+                }
+                else {
+                    res.status(400).send({
+                        isSuccess: false
+                    })
+                }
             })
-        });  
-       return payload.sort((a, b)=> b.total - a.total)  
-    }
+        }
+        catch (err) {
+            res.status(500).send({
+                isSuccess: false,
+                err
+            })
+        }
+
+    });
+
+summary_analytics = async (data) => {
+    payload = []
+    const users = await data.filter((v,i,a)=>a.findIndex(t=>(t.user === v.user))===i);
+
+    await users.forEach(element => {
+        payload.push({
+            user: element.user,
+            teamlead: element.teamlead,
+            region: element.region,
+            chillerTask: data.filter(dat=>dat.user == element.user && dat.taskType=='Chiller').length,
+            total: data.filter(dat=>dat.user == element.user && dat.taskType=='Chiller').length
+        })
+    })
+    return payload
+}
+
+async function analytics(data, type) {
+
+    payload = []
+    // delete duplicate
+    const users = await data.filter((v,i,a)=>a.findIndex(t=>(t[type.toLowerCase()] === v[type.toLowerCase()]))===i);
+
+    await users.forEach(element => {
+        payload.push({
+            header: element[type.toLowerCase()],
+            goodExec: data.filter(dat=>dat['action']=='success' && dat[type.toLowerCase()]==element[type.toLowerCase()]).length,
+            badExec: data.filter(dat=>dat['action']=='bad' && dat[type.toLowerCase()]==element[type.toLowerCase()]).length,
+            awaitingAI: data.filter(dat=>dat['action']=='Awaiting AI' && dat[type.toLowerCase()]==element[type.toLowerCase()]).length,
+            total: data.filter(dat=>dat[type.toLowerCase()]==element[type.toLowerCase()]).length,
+            perGoodExec: ((data.filter(dat=>dat['action']=='success' && dat[type.toLowerCase()]==element[type.toLowerCase()]).length/data.filter(dat=>dat[type.toLowerCase()]==element[type.toLowerCase()]).length)*100).toFixed(0),
+            perBadExec: ((data.filter(dat=>dat['action']=='bad' && dat[type.toLowerCase()]==element[type.toLowerCase()]).length/data.filter(dat=>dat[type.toLowerCase()]==element[type.toLowerCase()]).length)*100).toFixed(0),
+            perAwaitingAI: ((data.filter(dat=>dat['action']=='Awaiting AI' && dat[type.toLowerCase()]==element[type.toLowerCase()]).length/data.filter(dat=>dat[type.toLowerCase()]==element[type.toLowerCase()]).length)*100).toFixed(0),
+        })
+    });  
+    return payload.sort((a, b)=> b.total - a.total)  
+}
 
 
 // Function Handling Authentication

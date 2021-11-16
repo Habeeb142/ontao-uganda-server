@@ -40,7 +40,7 @@ router.route('/:weekType/:taskType')
         let accounts = await SF.query(soql);
         // RESULT = accounts['records']
         // Function doing actual submission into our databse
-        handleSubmitData(accounts['records'], taskType)
+        await handleSubmitData(accounts['records'], taskType)
         console.log('***Done***')
         
     })
@@ -54,7 +54,7 @@ async function handleSubmitData(data, taskType) {
         console.log(`You have ${data.length} data to upload!`)
         
         setTimeout(() => {       
-            for (let index = 10; index < data.length; index++) {
+            for (let index = 0; index < data.length; index++) {
                 const element = data[index];
    
                 // Uncomment when you are done to show just central
