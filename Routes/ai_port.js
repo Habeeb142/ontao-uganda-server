@@ -32,6 +32,8 @@ router.route('/:taskType')
     // Getting all tasks awaiting ai and send to AI for analysis
     .get(authenticateToken, async (req, res) => {
         try {
+            // fetch from Salesforce
+            // await pullFromSalesforce();
             // sql sattement doing the fetching using where clause
             await DB.query(`
             SELECT id, image, user, taskType, pocId, teamlead, region
@@ -112,5 +114,15 @@ router.route('/:taskType')
         }
         
     });
+
+pullFromSalesforce = async () => {
+    try {
+        await axios.get(`${process.env.BASE_URL}/get_set_data/today/chiller_task`, {headers: {'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.b250YXBfdXNlcg.Xrn-SjCX4jmbeDDqqMMgDlQkNId17LvNYTpQR52SK88'}})
+        return true
+        
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 module.exports = router;

@@ -38,80 +38,44 @@ router.route('/:weekType/:taskType')
         console.log('***Query Started***')
         // SOQL Query fetching fron SALESFROCE
         let accounts = await SF.query(soql);
-        // RESULT = accounts['records']
-        // Function doing actual submission into our databse
-        await handleSubmitData(accounts['records'], taskType)
-        console.log('***Done***')
-        
-    })
-    
-async function handleSubmitData(data, taskType) {
-    try {
-        // flter to get todatz tasks
+        const data = accounts['records'];
         x = new Date().toLocaleDateString().split("/")  
+        // console.log(`You have ${data.length} data to upload!`)
         
-        // const dat_ = data.filter(dat=> dat['CreatedDate'].split("T")[0] == x[2]+'-'+x[1]+'-'+x[0]);
-        console.log(`You have ${data.length} data to upload!`)
-        
-        setTimeout(() => {       
-            for (let index = 0; index < data.length; index++) {
-                const element = data[index];
-   
-                // Uncomment when you are done to show just central
-                // element['ONTAP__SurveyTaker__r']['ONTAP__Account__r']['ONTAP__Region__c'] == 'Central' ?
-                // start() : null
-                // end
-
-                // comment when u re abt shpowin jes central
-                start()
-                // end
-                async function start() {
-
+        setTimeout( async () => {   
+            await data.forEach((element, index) => {
+                (async()=>{
                     const selectSql = `
-                        SELECT id from ${taskType} 
-                        WHERE image = '${element.ONTEAF_Attachment_Link_to_Export__c}'
+                    SELECT id from ${taskType} 
+                    WHERE image = '${element.ONTEAF_Attachment_Link_to_Export__c}'
                     `
-                    await DB.query(selectSql, 
-                        (err, rows) => {
-                            if(!rows.length) {
+                 await DB.query(selectSql, 
+                    async (err, rows) => {
+                        if(!rows.length) {
 
-                                const sql = `
-                                INSERT INTO ${taskType} 
-                                (user, image, action, date, taskType, pocId, teamlead, region, month) 
-                                VALUES ('${element.CreatedBy.Email}', '${element.ONTEAF_Attachment_Link_to_Export__c}', 'Awaiting AI', '${element.CreatedDate}', 'Chiller', '${element.ONTAP__SurveyTaker__r.ONTAP__Account__c}', '${element.CreatedBy.First_Manager__r.Email}', '${element.ONTAP__SurveyTaker__r.ONTAP__Account__r.ONTAP__Region__c}', ${new Date().getMonth() + 1} )`
-                                    DB.query(sql, 
-                                    (err, rows) => {
-                                        try {
-                                            if (!err) {
-                                                console.log(`Just Uploaded: ${index} of ${data.length}`)
-                                            }
-                                            else {
-                                                console.log(err)
-                                            }
-                                        } catch (error) {
-                                            console.log(error)
-                                        }               
-                                    })
+                            const sql = `
+                            INSERT INTO ${taskType} 
+                            (user, image, action, date, taskType, pocId, teamlead, region, month) 
+                            VALUES ('${element.CreatedBy.Email}', '${element.ONTEAF_Attachment_Link_to_Export__c}', 'Awaiting AI', '${element.CreatedDate}', 'Chiller', '${element.ONTAP__SurveyTaker__r.ONTAP__Account__c}', '${element.CreatedBy.First_Manager__r.Email}', '${element['ONTAP__SurveyTaker__r']['ONTAP__Account__r']['ONTAP__City_Region__c']}', '${new Date().getMonth() + 1}' )`
+                             await DB.query(sql, 
+                                (err, rows) => {
+                                    try {
+                                        (index +1 == data.length) ? res.sendStatus(200) : null
+                                    } catch (error) {
+                                        console.log(error);
+                                        (index +1 == data.length) ? res.sendStatus(200) : null
+                                    }               
+                                })
 
-                            }      
-                            
-                            else {
-                                console.log(`Already Uploaded: ${index} of ${data.length}`)
-                            }
-                        })
-
-                    }
-                }
-                setTimeout(() => {
-                    
-                    return true
-                }, 6000);
+                        }     
+                        
+                        else {
+                            (index +1 == data.length) ? res.sendStatus(200) : null
+                        }
+                    })
+                })()
+            });
         }, 5000);
-
-    }
-    catch (err) {
-        console.log(err)
-    }
-}
+    })
 
 module.exports = router;
