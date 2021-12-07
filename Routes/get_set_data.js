@@ -52,25 +52,25 @@ router.route('/:weekType/:taskType')
                  await DB.query(selectSql, 
                     async (err, rows) => {
                         if(!rows.length) {
-
+                           
                             const sql = `
                             INSERT INTO ${taskType} 
                             (user, image, action, date, taskType, pocId, teamlead, region, month) 
-                            VALUES ('${element.CreatedBy.Email}', '${element.ONTEAF_Attachment_Link_to_Export__c}', 'Awaiting AI', '${element.CreatedDate}', 'Chiller', '${element.ONTAP__SurveyTaker__r.ONTAP__Account__c}', '${element.CreatedBy.First_Manager__r.Email}', '${element['ONTAP__SurveyTaker__r']['ONTAP__Account__r']['ONTAP__City_Region__c']}', '${new Date().getMonth() + 1}' )`
+                            VALUES ('${element.CreatedBy.Email}', '${element.ONTEAF_Attachment_Link_to_Export__c}', 'Awaiting AI', '${element.CreatedDate}', 'Chiller', '${element.ONTAP__SurveyTaker__r.ONTAP__Account__c}', '${element.CreatedBy.First_Manager__r.Email}', '${element['ONTAP__SurveyTaker__r']['ONTAP__Account__r']['ONTAP__Region__c']}', '${new Date().getMonth() + 1}' )`
                              await DB.query(sql, 
                                 (err, rows) => {
                                     try {
-                                        (index +1 == data.length) ? res.sendStatus(200) : null
+                                        (index +1 == data.length) ? res.sendStatus(200) : console.log(index, data.length)
                                     } catch (error) {
                                         console.log(error);
-                                        (index +1 == data.length) ? res.sendStatus(200) : null
+                                        (index +1 == data.length) ? res.sendStatus(200) : console.log(index, data.length)
                                     }               
                                 })
 
                         }     
                         
                         else {
-                            (index +1 == data.length) ? res.sendStatus(200) : null
+                            (index +1 == data.length) ? res.sendStatus(200) : console.log(index, data.length)
                         }
                     })
                 })()

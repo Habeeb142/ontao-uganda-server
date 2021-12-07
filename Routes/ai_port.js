@@ -33,7 +33,7 @@ router.route('/:taskType')
     .get(authenticateToken, async (req, res) => {
         try {
             // fetch from Salesforce
-            await pullFromSalesforce();
+            // await pullFromSalesforce();
             // sql sattement doing the fetching using where clause
             await DB.query(`
             SELECT id, image, user, taskType, pocId, teamlead, region
