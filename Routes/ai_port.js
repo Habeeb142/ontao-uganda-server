@@ -73,14 +73,30 @@ router.route('/:taskType')
             trimmed.white_space = req.body.whitespace_condition == undefined? null : req.body.whitespace_condition;
             trimmed.white_space_perc = req.body.percentage_whitespace == undefined? null : req.body.percentage_whitespace;
             trimmed.contaminated = req.body.contamination_presence;
-            trimmed.EagleDark = req.body.present_classes.EagleDark;
-            trimmed.NileSpecial = req.body.present_classes.NileSpecial;
-            trimmed.CastleMilkStout = req.body.present_classes.CastleMilkStout;
-            trimmed.CastleLiteCan = req.body.present_classes.CastleliteCan;
-            trimmed.EagleLager = req.body.present_classes.EagleLager;
-            trimmed.Club = req.body.present_classes.Club;
-            trimmed.CastleLite = req.body.present_classes.Castlelite;
-            trimmed.NileStout = req.body.present_classes.NileStout;
+            // trimmed.EagleDark = req.body.present_classes.EagleDark;
+            // trimmed.NileSpecial = req.body.present_classes.NileSpecial;
+            // trimmed.CastleMilkStout = req.body.present_classes.CastleMilkStout;
+            // trimmed.CastleLiteCan = req.body.present_classes.CastleliteCan;
+            // trimmed.EagleLager = req.body.present_classes.EagleLager;
+            // trimmed.Club = req.body.present_classes.Club;
+            // trimmed.CastleLite = req.body.present_classes.Castlelite;
+            // trimmed.NileStout = req.body.present_classes.NileStout;
+
+            trimmed.CastleLiteCAN = req.body.present_classes.CastleLiteCAN;
+            trimmed.CastleLiteRGB330 = req.body.present_classes.CastleLiteRGB330;
+            trimmed.CastleMilkStoutRGB330 = req.body.present_classes.CastleMilkStoutRGB330;
+            trimmed.ClubRGB330 = req.body.present_classes.ClubRGB330;
+            trimmed.ClubRGB500 = req.body.present_classes.ClubRGB500;
+            trimmed.EagleDarkRGB300 = req.body.present_classes.EagleDarkRGB300;
+            trimmed.EagleDarkRGB500 = req.body.present_classes.EagleDarkRGB500;
+            trimmed.EagleExtraRGB300 = req.body.present_classes.EagleExtraRGB300;
+            trimmed.EagleExtraRGB500 = req.body.present_classes.EagleExtraRGB500;
+            trimmed.EagleLagerRGB300 = req.body.present_classes.EagleLagerRGB300;
+            trimmed.EagleLagerRGB500 = req.body.present_classes.EagleLagerRGB500;
+            trimmed.NileSpecialRGB330 = req.body.present_classes.NileSpecialRGB330;
+            trimmed.NileSpecialRGB500 = req.body.present_classes.NileSpecialRGB500;
+            trimmed.NileStoutRGB330 = req.body.present_classes.NileStoutRGB330;
+
             // image_quality
             trimmed.image_quality = req.body.image_quality;
         }

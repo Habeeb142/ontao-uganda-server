@@ -63,7 +63,6 @@ router.route('/:weekType/:taskType')
                                     try {
                                         (index +1 == data.length) ? res.sendStatus(200) : console.log(index, data.length)
                                     } catch (error) {
-                                        console.log(error);
                                         (index +1 == data.length) ? res.sendStatus(200) : console.log(index, data.length)
                                     }               
                                 })
