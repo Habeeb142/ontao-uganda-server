@@ -34,7 +34,7 @@ function authenticateToken(req, res, next) {
 router.route('/:weekType/:taskType')
     .get( authenticateToken, async(req, res) => {
         const taskType = req.params.taskType
-        let soql = `SELECT ID, CreatedBy.Email,ONTAP__Survey_Question__r.ONTAP__Question__c,CreatedDate,ONTEAF_Attachment_Link_To_Export__c, ONTAP__SurveyTaker__r.ONTAP__Account__c,ONTAP__SurveyTaker__r.ONTAP__Account__r.Name,ONTAP__SurveyTaker__r.ONTAP__Account__r.ONTAP__Region__c,CreatedBy.First_Manager__r.Email FROM ONTAP__SurveyQuestionResponse__c WHERE ONTAP__Survey_Question__r.ONTAP__Survey__r.Name LIKE'%UG _POC EYE%' AND ONTAP__Survey_Question__r.ONTAP__Question__c LIKE '%Take the picture of the stock in the Coolers%' AND ONTEAF_Attachment_Link_To_Export__c != 'https://abiafrica--c.documentforce.com/servlet/servlet.FileDownload?file=' AND CreatedDate =  ${req.params.weekType}`
+        let soql = `SELECT ID, CreatedBy.Email, CreatedBy.Name, CreatedBy.Name, ONTAP__Survey_Question__r.ONTAP__Question__c, CreatedDate,ONTEAF_Attachment_Link_To_Export__c, ONTAP__SurveyTaker__r.ONTAP__Account__c,ONTAP__SurveyTaker__r.ONTAP__Account__r.Name,ONTAP__SurveyTaker__r.ONTAP__Account__r.ONTAP__Region__c,CreatedBy.First_Manager__r.Email FROM ONTAP__SurveyQuestionResponse__c WHERE ONTAP__Survey_Question__r.ONTAP__Survey__r.Name LIKE'%UG _POC EYE%' AND ONTAP__Survey_Question__r.ONTAP__Question__c LIKE '%Take the picture of the stock in the Coolers%' AND ONTEAF_Attachment_Link_To_Export__c != 'https://abiafrica--c.documentforce.com/servlet/servlet.FileDownload?file=' AND CreatedDate =  ${req.params.weekType}`
        
         console.log('***Query Started***')
         // SOQL Query fetching fron SALESFROCE
@@ -56,8 +56,8 @@ router.route('/:weekType/:taskType')
                            
                             const sql = `
                             INSERT INTO ${taskType} 
-                            (user, image, action, date, taskType, pocId, teamlead, region, month, outlet) 
-                            VALUES ('${element.CreatedBy.Email}', '${element.ONTEAF_Attachment_Link_to_Export__c}', 'Awaiting AI', '${element.CreatedDate}', 'Chiller', '${element.ONTAP__SurveyTaker__r.ONTAP__Account__c}', '${element.CreatedBy.First_Manager__r.Email}', '${element['ONTAP__SurveyTaker__r']['ONTAP__Account__r']['ONTAP__Region__c']}', '${new Date().getMonth() + 1}', '${element['ONTAP__SurveyTaker__r']['ONTAP__Account__r']['Name']}' )`
+                            (user, image, action, date, taskType, pocId, teamlead, region, month, outlet, name) 
+                            VALUES ('${element.CreatedBy.Email}', '${element.ONTEAF_Attachment_Link_to_Export__c}', 'Awaiting AI', '${element.CreatedDate}', 'Chiller', '${element.ONTAP__SurveyTaker__r.ONTAP__Account__c}', '${element.CreatedBy.First_Manager__r.Email}', '${element['ONTAP__SurveyTaker__r']['ONTAP__Account__r']['ONTAP__Region__c']}', '${new Date().getMonth() + 1}', '${element['ONTAP__SurveyTaker__r']['ONTAP__Account__r']['Name']}', '${element.CreatedBy.Name}' )`
                              await DB.query(sql, 
                                 (err, rows) => {
                                     try {
