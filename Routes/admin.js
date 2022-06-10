@@ -249,7 +249,8 @@ summary_analytics = async (data) => {
 
     await users.forEach(element => {
         payload.push({
-            user: element.name == '-' ? element.user : element.name,
+            user: element.user,
+            name: element.name,
             teamlead: element.teamlead,
             region: element.region,
             chillerTask: data.filter(dat=>dat.user == element.user && dat.taskType=='Chiller').length,
