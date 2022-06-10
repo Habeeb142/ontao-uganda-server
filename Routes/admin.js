@@ -114,7 +114,7 @@ router.route('/overview')
         
         try {
             await DB.query(`SELECT
-            id as taskId, user, pocId, taskType, outlet,
+            id as taskId, user, name, pocId, taskType, outlet,
             action, date, region, teamlead as team_lead, image
             FROM chiller_task 
             WHERE
@@ -212,7 +212,7 @@ router.route('/summary')
             
         try {
             await DB.query(`SELECT
-            id, user, taskType,
+            id, user, name, taskType,
             action, date, region, teamlead
             FROM chiller_task 
             WHERE
