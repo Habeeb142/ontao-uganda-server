@@ -34,7 +34,7 @@ function authenticateToken(req, res, next) {
 router.route('/:weekType/:taskType')
     .get( authenticateToken, async(req, res) => {
         const taskType = req.params.taskType
-        let soql = `SELECT ID, CreatedBy.Email, CreatedBy.Name, CreatedBy.Name, ONTAP__Survey_Question__r.ONTAP__Question__c, CreatedDate,ONTEAF_Attachment_Link_To_Export__c, ONTAP__SurveyTaker__r.ONTAP__Account__c,ONTAP__SurveyTaker__r.ONTAP__Account__r.Name,ONTAP__SurveyTaker__r.ONTAP__Account__r.ONTAP__Region__c,CreatedBy.First_Manager__r.Email FROM ONTAP__SurveyQuestionResponse__c WHERE ONTAP__Survey_Question__r.ONTAP__Survey__r.Name LIKE'%UG _POC EYE%' AND ONTAP__Survey_Question__r.ONTAP__Question__c LIKE '%Take the picture of the stock in the Coolers%' AND ONTEAF_Attachment_Link_To_Export__c != 'https://abiafrica--c.documentforce.com/servlet/servlet.FileDownload?file=' AND CreatedDate =  ${req.params.weekType}`
+        let soql = `SELECT ID, CreatedBy.Email, CreatedBy.Name, ONTAP__Survey_Question__r.ONTAP__Question__c, CreatedDate,ONTEAF_Attachment_Link_To_Export__c, ONTAP__SurveyTaker__r.ONTAP__Account__c,ONTAP__SurveyTaker__r.ONTAP__Account__r.Name,ONTAP__SurveyTaker__r.ONTAP__Account__r.ONTAP__Region__c,CreatedBy.First_Manager__r.Email FROM ONTAP__SurveyQuestionResponse__c WHERE ONTAP__Survey_Question__r.ONTAP__Survey__r.Name LIKE'%UG _POC EYE%' AND ONTAP__Survey_Question__r.ONTAP__Question__c LIKE '%Take the picture of the stock in the Coolers%' AND ONTEAF_Attachment_Link_To_Export__c != 'https://abiafrica--c.documentforce.com/servlet/servlet.FileDownload?file=' AND CreatedDate =  ${req.params.weekType}`
        
         console.log('***Query Started***')
         // SOQL Query fetching fron SALESFROCE
